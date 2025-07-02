@@ -14,8 +14,7 @@
       <div class="price-box">
         <template v-if="isLoggedIn">
           <s>{{ hotel.price }}₺</s> →
-          <strong>{{ calculateDiscountedPrice(hotel) }}₺</strong>
-          <span v-if="hotel.discount_rate" class="discount-tag">(%{{ hotel.discount_rate }} indirim)</span>
+          <strong>{{ discountedPrice(hotel.price) }}₺</strong>
         </template>
         <template v-else>
           {{ hotel.price }}₺
@@ -81,13 +80,27 @@ export default {
         7: { Temizlik: 8.5, "Personel ve servis": 8.3, "İmkan": 8.2 }
       },
       commentsMap: {
-        1: [{ user: "Simge", date: "Haziran 2025", text: "Deniz manzarası çok güzeldi." }],
-        2: [{ user: "Ali", date: "Haziran 2025", text: "Kahvaltı harikaydı, tekrar gelirim." }],
-        3: [{ user: "Melike", date: "Mayıs 2025", text: "Spa merkezi muazzam!" }],
-        4: [{ user: "Zeynep", date: "Temmuz 2025", text: "Ailecek çok memnun kaldık." }],
-        5: [{ user: "Kerem", date: "Nisan 2025", text: "Odalar temizdi ama biraz küçüktü." }],
-        6: [{ user: "Derya", date: "Mart 2025", text: "Otopark sıkıntısı yaşamadık, süper." }],
-        7: [{ user: "Özgür", date: "Haziran 2025", text: "Konumu çok merkezi." }]
+        1: [
+          { user: "Simge", date: "Haziran 2025", text: "Deniz manzarası çok güzeldi." }
+        ],
+        2: [
+          { user: "Ali", date: "Haziran 2025", text: "Kahvaltı harikaydı, tekrar gelirim." }
+        ],
+        3: [
+          { user: "Melike", date: "Mayıs 2025", text: "Spa merkezi muazzam!" }
+        ],
+        4: [
+          { user: "Zeynep", date: "Temmuz 2025", text: "Ailecek çok memnun kaldık." }
+        ],
+        5: [
+          { user: "Kerem", date: "Nisan 2025", text: "Odalar temizdi ama biraz küçüktü." }
+        ],
+        6: [
+          { user: "Derya", date: "Mart 2025", text: "Otopark sıkıntısı yaşamadık, süper." }
+        ],
+        7: [
+          { user: "Özgür", date: "Haziran 2025", text: "Konumu çok merkezi." }
+        ]
       },
       serviceRatings: {},
       comments: []
@@ -95,9 +108,10 @@ export default {
   },
   async mounted() {
     const id = this.$route.params.id
-    const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/hotels`)
+    const res = await axios.get('http://localhost:3000/hotels')
     this.hotel = res.data.find(h => h.id == id)
 
+    // Login kontrolü
     const token = localStorage.getItem('token')
     if (token) {
       try {
@@ -108,15 +122,15 @@ export default {
       }
     }
 
+    // Yorum ve puanları ata
     this.serviceRatings = this.serviceRatingsMap[id] || {}
     this.comments = this.commentsMap[id] || []
 
     this.initMap()
   },
   methods: {
-    calculateDiscountedPrice(hotel) {
-      const rate = hotel.discount_rate || 10
-      return Math.floor(hotel.price * (1 - rate / 100))
+    discountedPrice(price) {
+      return Math.floor(price * 0.9)
     },
     initMap() {
       if (!this.hotel.latitude || !this.hotel.longitude) return
@@ -158,11 +172,6 @@ export default {
 }
 .price-box {
   font-size: 18px;
-}
-.discount-tag {
-  color: green;
-  font-size: 14px;
-  margin-left: 10px;
 }
 .non-member {
   color: red;

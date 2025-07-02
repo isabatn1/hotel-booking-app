@@ -4,6 +4,7 @@
 
     <div class="search-form">
       <input v-model="searchCity" placeholder="Şehir giriniz" />
+      <input v-model="searchName" placeholder="Otel adı" />
       <input type="date" v-model="dateFrom" />
       <input type="date" v-model="dateTo" />
       <input type="number" v-model="guestCount" min="1" placeholder="Kişi sayısı" />
@@ -58,6 +59,7 @@ export default {
       isLoggedIn: false,
       userName: null,
       searchCity: '',
+      searchName: '',
       dateFrom: '',
       dateTo: '',
       guestCount: '',
@@ -81,18 +83,24 @@ export default {
   },
   methods: {
     async fetchAllHotels() {
-      const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/hotels`)
+      const res = await axios.get('http://localhost:3000/hotels')
       this.hotels = res.data
     },
     async searchHotels() {
       const params = {
         city: this.searchCity,
+        name: this.searchName,
         dateFrom: this.dateFrom,
         dateTo: this.dateTo,
         guests: this.guestCount
       }
-      const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/hotels`, { params })
-      this.hotels = res.data
+      const res = await axios.get('http://localhost:3000/hotels', { params })
+      // Kapasiteye göre filtreleme (frontend tarafında)
+      this.hotels = res.data.filter(hotel => {
+        const enoughCapacity = !this.guestCount || hotel.capacity >= this.guestCount
+        const nameMatch = !this.searchName || hotel.name.toLowerCase().includes(this.searchName.toLowerCase())
+        return enoughCapacity && nameMatch
+      })
     },
     calculateDiscountedPrice(rate, price) {
       return Math.floor(price * (1 - rate / 100))
@@ -125,6 +133,7 @@ export default {
 </script>
 
 <style scoped>
+/* Style'ların seninkilerle aynı şekilde korunmuştur */
 .home {
   padding: 20px;
 }
