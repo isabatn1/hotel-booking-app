@@ -81,7 +81,7 @@ export default {
   },
   methods: {
     async fetchAllHotels() {
-      const res = await axios.get('http://localhost:3000/hotels')
+      const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/hotels`)
       this.hotels = res.data
     },
     async searchHotels() {
@@ -91,7 +91,7 @@ export default {
         dateTo: this.dateTo,
         guests: this.guestCount
       }
-      const res = await axios.get('http://localhost:3000/hotels', { params })
+      const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/hotels`, { params })
       this.hotels = res.data
     },
     calculateDiscountedPrice(rate, price) {
