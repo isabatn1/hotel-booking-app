@@ -95,7 +95,7 @@ export default {
   },
   async mounted() {
     const id = this.$route.params.id
-    const res = await axios.get('http://localhost:3000/hotels')
+    const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/hotels`)
     this.hotel = res.data.find(h => h.id == id)
 
     const token = localStorage.getItem('token')
