@@ -26,8 +26,8 @@ This is a full-stack hotel booking application that allows users to explore hote
 
 ## 🧪 Test Credentials
 
-- Email: `test@example.com`  
-- Password: `Test123!`
+- Email: `isa@example.com`  
+- Password: `12345678-1`
 
 ## ⚙️ Technologies Used
 
